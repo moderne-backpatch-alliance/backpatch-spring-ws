@@ -16,18 +16,22 @@
 
 package org.springframework.xml.xpath;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.sax.SAXSource;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -35,6 +39,7 @@ import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPathFactoryConfigurationException;
 
 import org.springframework.util.xml.StaxUtils;
+import org.springframework.xml.DocumentBuilderFactoryUtils;
 import org.springframework.xml.namespace.SimpleNamespaceContext;
 import org.springframework.xml.transform.TransformerHelper;
 import org.springframework.xml.transform.TraxUtils;
@@ -44,6 +49,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 /**
@@ -179,8 +185,11 @@ public class Jaxp13XPathTemplate extends AbstractXPathTemplate {
 		}
 
 		@Override
-		public void saxSource(XMLReader reader, InputSource inputSource) throws XPathExpressionException {
-			inputSource(inputSource);
+		public void saxSource(XMLReader reader, InputSource inputSource)
+				throws XPathExpressionException, TransformerException {
+			SAXSource saxSource = new SAXSource(reader, inputSource);
+			Element element = getRootElement(saxSource);
+			domSource(element);
 		}
 
 		@Override
@@ -212,7 +221,14 @@ public class Jaxp13XPathTemplate extends AbstractXPathTemplate {
 		}
 
 		private void inputSource(InputSource inputSource) throws XPathExpressionException {
-			result = xpath.evaluate(expression, inputSource, returnType);
+			try {
+				DocumentBuilderFactory factory = DocumentBuilderFactoryUtils.newInstance();
+				factory.setNamespaceAware(true);
+				Document document = factory.newDocumentBuilder().parse(inputSource);
+				domSource(document);
+			} catch (ParserConfigurationException | SAXException | IOException ex) {
+				throw new XPathExpressionException(ex);
+			}
 		}
 
 		private Element getRootElement(Source source) throws TransformerException {
