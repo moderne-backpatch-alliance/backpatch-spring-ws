@@ -1,17 +1,22 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 3.1.8.1-backpatch-00001
+release: 3.1.8.1-backpatch-00002
 baseline: v3.1.8+backpatch.baseline
 fixes:
   - cve: CVE-2026-40999
     upstream: https://nvd.nist.gov/vuln/detail/CVE-2026-40999
     artifacts:
       - org.springframework.ws:spring-ws-core
-    note: New in this release; ported onto 3.1.8; fixed at 3.1.8.1-backpatch-00001 (backpatch-spring-ws@5a095c3..ea2b75e).
+    note: Carried from 3.1.8.1-backpatch-00001; ported onto 3.1.8; fixed at 3.1.8.1-backpatch-00001 (backpatch-spring-ws@5a095c3..ea2b75e).
+  - cve: CVE-2026-40998
+    upstream: https://nvd.nist.gov/vuln/detail/CVE-2026-40998
+    artifacts:
+      - org.springframework.ws:spring-xml
+    note: New in this release; ported onto 3.1.8; fixed at 3.1.8.1-backpatch-00002 (backpatch-spring-ws@7bb9494).
 tests:
-  commit: ea2b75e58249b3f59e8efcb45b74e2f8ced7dee4
-  command: mvn -B -q -pl spring-ws-core -am test -Dtest=AddressingEndpointInterceptorRemoteDestinationTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false
+  commit: 7bb949443f58238b3fff755297d372a9bd2731c5
+  command: mvn -B -q -pl spring-xml -am test -Dtest=Jaxp13XPathTemplateXxeTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false
   runtime: OpenJDK 1.8.0_372 (Zulu), Apache Maven 3.9.14
-  report: spring-ws-core-3.1.8.1-backpatch-00001-tests.zip
+  report: spring-xml-3.1.8.1-backpatch-00002-tests.zip
   result: pass
-  note: the regression tests the fix commits touched, 3 test(s) run, 0 failed, at the tested commit
+  note: the regression tests the fix commits touched, 4 test(s) run, 0 failed, at the tested commit
