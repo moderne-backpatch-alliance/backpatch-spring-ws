@@ -19,6 +19,7 @@ package org.springframework.ws.soap.security.wss4j2;
 import static org.assertj.core.api.Assertions.*;
 
 import org.apache.wss4j.dom.engine.WSSecurityEngine;
+import org.apache.wss4j.dom.handler.RequestData;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ws.context.DefaultMessageContext;
@@ -98,4 +99,28 @@ public abstract class Wss4jInterceptorTestCase extends Wss4jTestCase {
 
 		assertThat(ReflectionTestUtils.getField(interceptor, "securityEngine")).isEqualTo(engine);
 	}
+
+	@Test
+	void requestDataIsBspCompliantByDefault() throws Exception {
+		WSSecurityEngine engine = new WSSecurityEngine();
+		Wss4jSecurityInterceptor interceptor = new Wss4jSecurityInterceptor(engine);
+
+		SoapMessage request = loadSoap11Message("empty-soap.xml");
+		MessageContext context = new DefaultMessageContext(request, getSoap11MessageFactory());
+		RequestData requestData = interceptor.initializeValidationRequestData(context);
+		assertThat(requestData.isDisableBSPEnforcement()).isFalse();
+	}
+
+	@Test
+	void bspComplianceCanBeDisabled() throws Exception {
+		WSSecurityEngine engine = new WSSecurityEngine();
+		Wss4jSecurityInterceptor interceptor = new Wss4jSecurityInterceptor(engine);
+		interceptor.setBspCompliant(false);
+
+		SoapMessage request = loadSoap11Message("empty-soap.xml");
+		MessageContext context = new DefaultMessageContext(request, getSoap11MessageFactory());
+		RequestData requestData = interceptor.initializeValidationRequestData(context);
+		assertThat(requestData.isDisableBSPEnforcement()).isTrue();
+	}
+
 }
