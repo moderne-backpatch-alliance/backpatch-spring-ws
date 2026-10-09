@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 3.1.8.1-backpatch-00002
+release: 3.1.8.1-backpatch-00003
 baseline: v3.1.8+backpatch.baseline
 fixes:
   - cve: CVE-2026-40999
@@ -12,11 +12,16 @@ fixes:
     upstream: https://nvd.nist.gov/vuln/detail/CVE-2026-40998
     artifacts:
       - org.springframework.ws:spring-xml
-    note: New in this release; ported onto 3.1.8; fixed at 3.1.8.1-backpatch-00002 (backpatch-spring-ws@7bb9494).
+    note: Carried from 3.1.8.1-backpatch-00002; ported onto 3.1.8; fixed at 3.1.8.1-backpatch-00002 (backpatch-spring-ws@7bb9494).
+  - cve: CVE-2026-40994
+    upstream: https://nvd.nist.gov/vuln/detail/CVE-2026-40994
+    artifacts:
+      - org.springframework.ws:spring-ws-security
+    note: New in this release; ported onto 3.1.8; fixed at 3.1.8.1-backpatch-00003 (backpatch-spring-ws@5ceca63).
 tests:
-  commit: 7bb949443f58238b3fff755297d372a9bd2731c5
-  command: mvn -B -q -pl spring-xml -am test -Dtest=Jaxp13XPathTemplateXxeTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false
-  runtime: OpenJDK 1.8.0_372 (Zulu), Apache Maven 3.9.14
-  report: spring-xml-3.1.8.1-backpatch-00002-tests.zip
+  commit: 5ceca6337ea7a5e01eb310b51c37d2042e263b24
+  command: mvn -B -q -pl spring-ws-security -am test -Dtest=AxiomWss4jInterceptorTest,SaajWss4jInterceptorTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false
+  runtime: OpenJDK 1.8.0_382 (Zulu), Apache Maven 3.9.16
+  report: spring-ws-security-3.1.8.1-backpatch-00003-tests.zip
   result: pass
-  note: the regression tests the fix commits touched, 4 test(s) run, 0 failed, at the tested commit
+  note: the regression tests the fix commits touched, 10 test(s) run, 0 failed, at the tested commit
