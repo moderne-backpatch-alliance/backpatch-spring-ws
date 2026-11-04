@@ -1,27 +1,36 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 3.1.8.1-backpatch-00003
+release: 3.1.8.1-backpatch-00004
 baseline: v3.1.8+backpatch.baseline
 fixes:
   - cve: CVE-2026-40999
-    upstream: https://nvd.nist.gov/vuln/detail/CVE-2026-40999
+    upstream_fix_url: https://github.com/spring-projects/spring-ws/commit/5121a4e545803c4925e63c4ed015391be2605ba5
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-40999
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-spring-ws/compare/5a095c3~1...ea2b75e
+    basis: adapted
     artifacts:
       - org.springframework.ws:spring-ws-core
     note: Carried from 3.1.8.1-backpatch-00001; ported onto 3.1.8; fixed at 3.1.8.1-backpatch-00001 (backpatch-spring-ws@5a095c3..ea2b75e).
   - cve: CVE-2026-40998
-    upstream: https://nvd.nist.gov/vuln/detail/CVE-2026-40998
+    upstream_fix_url: https://github.com/spring-projects/spring-ws/commit/eb8d66c0995d1e1dd5bfcfb657c8c9de21266d97
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-40998
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-spring-ws/commit/7bb9494
+    basis: backport
     artifacts:
       - org.springframework.ws:spring-xml
     note: Carried from 3.1.8.1-backpatch-00002; ported onto 3.1.8; fixed at 3.1.8.1-backpatch-00002 (backpatch-spring-ws@7bb9494).
   - cve: CVE-2026-40994
-    upstream: https://nvd.nist.gov/vuln/detail/CVE-2026-40994
+    upstream_fix_url: https://github.com/spring-projects/spring-ws/commit/9f1cea1d6fa14f082e0e7da195f76ccccf87682e
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-40994
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-spring-ws/commit/5ceca63
+    basis: backport
     artifacts:
       - org.springframework.ws:spring-ws-security
-    note: New in this release; ported onto 3.1.8; fixed at 3.1.8.1-backpatch-00003 (backpatch-spring-ws@5ceca63).
+    note: Carried from 3.1.8.1-backpatch-00003; ported onto 3.1.8; fixed at 3.1.8.1-backpatch-00003 (backpatch-spring-ws@5ceca63).
 tests:
-  commit: 5ceca6337ea7a5e01eb310b51c37d2042e263b24
-  command: mvn -B -q -pl spring-ws-security -am test -Dtest=AxiomWss4jInterceptorTest,SaajWss4jInterceptorTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false
-  runtime: OpenJDK 1.8.0_382 (Zulu), Apache Maven 3.9.16
-  report: spring-ws-security-3.1.8.1-backpatch-00003-tests.zip
+  commit: cdcfc5c5858533947db334b600fc77aee503bb13
+  command: none in this repository
+  runtime: none, no build or test ran for this release
+  report: carried, see the evidence of the release named in the note
   result: pass
-  note: the regression tests the fix commits touched, 10 test(s) run, 0 failed, at the tested commit
+  note: "this release is a tooling update, it carries no new fix, nothing ran here; its test provenance is tooling-2026-11-03-spring-ws-3.1: a tooling update of moderne-backpatch-alliance/backpatch-spring-ws at v3.1.8.1-backpatch-00003, whose .backpatch/patch-evidence.yaml says what ran"
