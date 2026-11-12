@@ -114,7 +114,7 @@ class AddressingEndpointInterceptor implements SoapEndpointInterceptor {
 			sendOutOfBand(messageContext, replyEpr, () -> {
 				if (logger.isWarnEnabled()) {
 					logger.warn("Could not send out-of-band response to [" + replyEpr.getAddress() + "]. "
-							+ "Configure WebServiceMessageSenders which support this uri.");
+							+ "Configure WebServiceMessageSenders which support this uri and pass remote destination checks.");
 				}
 				messageContext.clearResponse();
 				this.version.addInvalidAddressingHeaderFault((SoapMessage) messageContext.getResponse());
@@ -153,11 +153,12 @@ class AddressingEndpointInterceptor implements SoapEndpointInterceptor {
 					+ "] reply address; sending out-of-band reply [" + messageContext.getResponse() + "]");
 		}
 
+		URI address = replyEpr.getAddress();
 		boolean supported = false;
 		for (WebServiceMessageSender messageSender : this.messageSenders) {
-			if (messageSender.supports(replyEpr.getAddress())) {
+			if (supportsRemoteDestination(messageSender, address)) {
 				supported = true;
-				try (WebServiceConnection connection = messageSender.createConnection(replyEpr.getAddress())) {
+				try (WebServiceConnection connection = messageSender.createConnection(address)) {
 					connection.send(messageContext.getResponse());
 					break;
 				}
@@ -169,6 +170,19 @@ class AddressingEndpointInterceptor implements SoapEndpointInterceptor {
 		if (!supported) {
 			actionIfUnsupported.run();
 		}
+	}
+
+	/**
+	 * Whether the given sender may be used to reach a destination the requesting peer
+	 * chose. The sender's own transport rules decide whether it handles the URI at all;
+	 * a destination it does handle is then screened, because {@code wsa:ReplyTo} and
+	 * {@code wsa:FaultTo} are attacker-controlled on the server side.
+	 */
+	private boolean supportsRemoteDestination(WebServiceMessageSender messageSender, URI address) {
+		if (!messageSender.supports(address)) {
+			return false;
+		}
+		return !RemoteDestinationChecks.isScreened(address) || RemoteDestinationChecks.accepts(address);
 	}
 
 	private URI getMessageId(SoapMessage response) {
