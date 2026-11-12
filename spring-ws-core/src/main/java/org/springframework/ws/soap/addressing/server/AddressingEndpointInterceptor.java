@@ -22,6 +22,7 @@ import java.net.URI;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.springframework.core.Ordered;
 import org.springframework.util.Assert;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapHeaderElement;
@@ -41,7 +42,17 @@ import org.springframework.ws.transport.WebServiceMessageSender;
  * @author Arjen Poutsma
  * @since 1.5.0
  */
-class AddressingEndpointInterceptor implements SoapEndpointInterceptor {
+class AddressingEndpointInterceptor implements SoapEndpointInterceptor, Ordered {
+
+	/**
+	 * Default order for WS-Addressing support. Application endpoint interceptors should
+	 * usually be invoked after, so that addressing headers such as required-header checks
+	 * and message ID deduplication have been validated. Interceptors with no order or a
+	 * positive order can rely on the request being fully WS-Addressing-conformant. Use a
+	 * negative value to order an interceptor before WS-Addressing processing.
+	 * @since 3.1.9
+	 */
+	public static final int DEFAULT_ORDER = 0;
 
 	private static final Log logger = LogFactory.getLog(AddressingEndpointInterceptor.class);
 
@@ -191,6 +202,11 @@ class AddressingEndpointInterceptor implements SoapEndpointInterceptor {
 			logger.trace("Generated reply MessageID [" + responseMessageId + "] for [" + response + "]");
 		}
 		return responseMessageId;
+	}
+
+	@Override
+	public int getOrder() {
+		return DEFAULT_ORDER;
 	}
 
 	@Override
