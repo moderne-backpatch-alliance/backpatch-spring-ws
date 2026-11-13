@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 4.0.17.1-backpatch-00005
+release: 4.0.17.1-backpatch-00006
 baseline: v4.0.17+backpatch.baseline
 fixes:
   - cve: CVE-2026-40998
@@ -52,12 +52,22 @@ fixes:
       - org.springframework.ws:spring-xml
       - org.springframework.ws:spring-ws-core
       - org.springframework.ws:spring-ws-security
-    note: New in this release; ported onto 4.0.17; fixed at 4.0.17.1-backpatch-00005 (backpatch-spring-ws@08d6c60).
+    note: Carried from 4.0.17.1-backpatch-00005; ported onto 4.0.17; fixed at 4.0.17.1-backpatch-00005 (backpatch-spring-ws@08d6c60).
+  - cve: CVE-2026-40999
+    upstream_fix_url: https://github.com/advisories/GHSA-whpp-xv3h-rwxf
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-40999
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-spring-ws/compare/3255347~1...8f99e99
+    basis: adapted
+    artifacts:
+      - org.springframework.ws:spring-xml
+      - org.springframework.ws:spring-ws-core
+      - org.springframework.ws:spring-ws-security
+    note: New in this release; ported onto 4.0.17; fixed at 4.0.17.1-backpatch-00006 (backpatch-spring-ws@3255347..8f99e99). WS-Addressing endpoints (`@Action` methods, `SimpleActionEndpointMapping` and other `AbstractAddressingEndpointMapping` subclasses) now screen the `wsa:ReplyTo` and `wsa:FaultTo` addresses a peer sends, and run their interceptors by `Ordered` order (CVE-2026-40999). If a request names a non-anonymous reply address that none of the mapping's `messageSenders` supports (a mapping has none unless you configure them), or an `http` or `https` address whose host is `localhost` or a loopback, link-local, wildcard or private IPv4 literal such as `10.0.0.1`, the peer now gets an invalid addressing header fault where 4.0.17 replied. After the pre-interceptors, interceptors now run as WS-Security (-200), addressing (0), smart interceptors such as `PayloadRootSmartSoapEndpointInterceptor` (100), then unordered ones, so an interceptor added in `WsConfigurer.addInterceptors` runs after the smart ones where 4.0.17 ran it before them. Configure `messageSenders` for the reply schemes you serve, start with `-Dspring-ws.addressing.allow-site-local-ipv4=true` to admit private IPv4 addresses (this brings back part of the exposure the fix closes), and implement `Ordered` on an interceptor that must run earlier.
 tests:
-  commit: 08d6c60520cd9464a1f2f21e4e233262875cd83a
+  commit: 8f99e99ee7f0069a6d317371e0236e76be4c1b19
   command: gradlew :spring-xml:test :spring-ws-core:test :spring-ws-security:test --continue (JDK 17)
   runtime: openjdk version 17.0.16 2025-07-15 LTS, Gradle wrapper
-  report: spring-ws-core-4.0.17.1-backpatch-00005-tests.zip
-  report_sha256: fd35c2dfd671d81fdb305de0c5c1970bab0cb3628a45e2e3fe83888348c33f08
+  report: spring-ws-core-4.0.17.1-backpatch-00006-tests.zip
+  report_sha256: 16e2765b95843241333762184407bd50f80786118f6b56b2328482235f933bc6
   result: pass
-  note: 984 tests at the patch commit, 0 of them skipped by the suite, 0 failed, 0 errors.
+  note: 1002 tests at the patch commit, 0 of them skipped by the suite, 0 failed, 0 errors.
