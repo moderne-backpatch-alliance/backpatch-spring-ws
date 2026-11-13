@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 4.0.17.1-backpatch-00003
+release: 4.0.17.1-backpatch-00004
 baseline: v4.0.17+backpatch.baseline
 fixes:
   - cve: CVE-2026-40998
@@ -32,12 +32,22 @@ fixes:
       - org.springframework.ws:spring-xml
       - org.springframework.ws:spring-ws-core
       - org.springframework.ws:spring-ws-security
-    note: New in this release; ported onto 4.0.17; fixed at 4.0.17.1-backpatch-00003 (backpatch-spring-ws@1df33be).
+    note: Carried from 4.0.17.1-backpatch-00003; ported onto 4.0.17; fixed at 4.0.17.1-backpatch-00003 (backpatch-spring-ws@1df33be).
+  - cve: CVE-2026-40996
+    upstream_fix_url: https://github.com/spring-projects/spring-ws/commit/abab9992d15d8860627993987182edc8189ade93
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-40996
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-spring-ws/commit/96c5a7c
+    basis: backport
+    artifacts:
+      - org.springframework.ws:spring-xml
+      - org.springframework.ws:spring-ws-core
+      - org.springframework.ws:spring-ws-security
+    note: New in this release; ported onto 4.0.17; fixed at 4.0.17.1-backpatch-00004 (backpatch-spring-ws@96c5a7c). `Wss4jSecurityInterceptor` now refuses inbound messages whose symmetric key is encrypted with RSA PKCS#1 v1.5 key transport, `http://www.w3.org/2001/04/xmlenc#rsa-1_5` (CVE-2026-40996). If your service decrypts requests from peers configured for that algorithm, those requests now get a SOAP fault where 4.0.17 decrypted them. Ask the peer to switch to RSA-OAEP, `http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p` (a Spring-WS client sets it with `securementEncryptionKeyTransportAlgorithm`), or set `allowRSA15KeyTransportAlgorithm` to `true` on the interceptor, which brings back the exposure the fix closes.
 tests:
-  commit: 1df33be653a9e5822f9d8d9bbac6b3ae4110303c
+  commit: 96c5a7c6b539fc541106081673e4bc47bdf55301
   command: gradlew :spring-xml:test :spring-ws-core:test :spring-ws-security:test --continue (JDK 17)
   runtime: openjdk version 17.0.16 2025-07-15 LTS, Gradle wrapper
-  report: spring-ws-core-4.0.17.1-backpatch-00003-tests.zip
-  report_sha256: a2bcc46492d1d1671fef9aae667f20be0f32f9967d5327994400cc4b6c5906f1
+  report: spring-ws-core-4.0.17.1-backpatch-00004-tests.zip
+  report_sha256: b2baaf1869deab1a21b3b4e24b856032aaf9e00820432b947bd9512431fc4b0d
   result: pass
-  note: 974 tests at the patch commit, 0 of them skipped by the suite, 0 failed, 0 errors.
+  note: 978 tests at the patch commit, 0 of them skipped by the suite, 0 failed, 0 errors.
