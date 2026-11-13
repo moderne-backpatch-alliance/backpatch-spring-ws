@@ -1,0 +1,23 @@
+schema: osera-patch-evidence/0.1.0
+producer: moderne
+release: 4.0.17.1-backpatch-00001
+baseline: v4.0.17+backpatch.baseline
+fixes:
+  - cve: CVE-2026-40998
+    upstream_fix_url: https://github.com/spring-projects/spring-ws/commit/eb8d66c0995d1e1dd5bfcfb657c8c9de21266d97
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-40998
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-spring-ws/commit/64bc2f6
+    basis: backport
+    artifacts:
+      - org.springframework.ws:spring-xml
+      - org.springframework.ws:spring-ws-core
+      - org.springframework.ws:spring-ws-security
+    note: New in this release; ported onto 4.0.17; fixed at 4.0.17.1-backpatch-00001 (backpatch-spring-ws@64bc2f6).
+tests:
+  commit: 64bc2f6326998e8251744404be2570353a74607b
+  command: gradlew :spring-xml:test :spring-ws-core:test :spring-ws-security:test --continue (JDK 17)
+  runtime: openjdk version 17.0.16 2025-07-15 LTS, Gradle wrapper
+  report: spring-ws-core-4.0.17.1-backpatch-00001-tests.zip
+  report_sha256: 21905801d17bd42ff69e54a9d0d60e1b088131b8d4548d9fe0ed3a1b352bea02
+  result: pass
+  note: 958 tests at the patch commit, 0 of them skipped by the suite, 0 failed, 0 errors.
