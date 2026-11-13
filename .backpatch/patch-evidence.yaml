@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 4.0.17.1-backpatch-00002
+release: 4.0.17.1-backpatch-00003
 baseline: v4.0.17+backpatch.baseline
 fixes:
   - cve: CVE-2026-40998
@@ -22,12 +22,22 @@ fixes:
       - org.springframework.ws:spring-xml
       - org.springframework.ws:spring-ws-core
       - org.springframework.ws:spring-ws-security
-    note: New in this release; ported onto 4.0.17; fixed at 4.0.17.1-backpatch-00002 (backpatch-spring-ws@33301d0). `Wss4jSecurityInterceptor` now enforces the WS-I Basic Security Profile when it validates inbound messages, as WSS4J does by default (CVE-2026-40994). If your service accepts WS-Security headers from peers that break a BSP rule WSS4J checks, for example a `UsernameToken` whose `Password` element has no `Type` attribute, those requests now get a SOAP fault where 4.0.17 accepted them. Ask the peer to send conformant headers, or set `bspCompliant` to `false` on the interceptor (`setBspCompliant(false)`), which brings back the exposure the fix closes.
+    note: Carried from 4.0.17.1-backpatch-00002; ported onto 4.0.17; fixed at 4.0.17.1-backpatch-00002 (backpatch-spring-ws@33301d0). `Wss4jSecurityInterceptor` now enforces the WS-I Basic Security Profile when it validates inbound messages, as WSS4J does by default (CVE-2026-40994). If your service accepts WS-Security headers from peers that break a BSP rule WSS4J checks, for example a `UsernameToken` whose `Password` element has no `Type` attribute, those requests now get a SOAP fault where 4.0.17 accepted them. Ask the peer to send conformant headers, or set `bspCompliant` to `false` on the interceptor (`setBspCompliant(false)`), which brings back the exposure the fix closes.
+  - cve: CVE-2026-40995
+    upstream_fix_url: https://github.com/spring-projects/spring-ws/commit/e5dc311359e14f5b25bcb33f20d43cc3513e9d10
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2026-40995
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-spring-ws/commit/1df33be
+    basis: backport
+    artifacts:
+      - org.springframework.ws:spring-xml
+      - org.springframework.ws:spring-ws-core
+      - org.springframework.ws:spring-ws-security
+    note: New in this release; ported onto 4.0.17; fixed at 4.0.17.1-backpatch-00003 (backpatch-spring-ws@1df33be).
 tests:
-  commit: 33301d0c00c85ea2e50e9a32f72212b7280d63ba
+  commit: 1df33be653a9e5822f9d8d9bbac6b3ae4110303c
   command: gradlew :spring-xml:test :spring-ws-core:test :spring-ws-security:test --continue (JDK 17)
   runtime: openjdk version 17.0.16 2025-07-15 LTS, Gradle wrapper
-  report: spring-ws-core-4.0.17.1-backpatch-00002-tests.zip
-  report_sha256: f1609935e8970cfa57ca3e8e8da8c54f2f48dac2712203854c1213c95a26a96b
+  report: spring-ws-core-4.0.17.1-backpatch-00003-tests.zip
+  report_sha256: a2bcc46492d1d1671fef9aae667f20be0f32f9967d5327994400cc4b6c5906f1
   result: pass
-  note: 960 tests at the patch commit, 0 of them skipped by the suite, 0 failed, 0 errors.
+  note: 974 tests at the patch commit, 0 of them skipped by the suite, 0 failed, 0 errors.
